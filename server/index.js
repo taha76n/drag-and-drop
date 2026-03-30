@@ -10,12 +10,12 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const Port = process.env.PORT
+const PORT = process.env.PORT || 6300
 const app = express()
 
 app.use(cors({
   origin: function (origin, callback){
-    const allowed = ["http://localhost:5173"]
+    const allowed = ["http://localhost:5173","https://yourfrontend.vercel.app"]
     if (!origin) {
       return callback(null, true)
     };
@@ -68,7 +68,9 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({storage});
+const upload = multer({storage,
+  limits:{ fileSize: 5 * 1024 * 1024 } // 5MB
+});
 
 app.post("/upload", upload.single("image"), (req,res) => {
   try {
@@ -126,7 +128,6 @@ app.get("/", (req, res)=>{
 })
 
 
-app.listen(Port, () => {
-  console.log(`server listening on port ${Port}`);
-  
+app.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`);
 })
